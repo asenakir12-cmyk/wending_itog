@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приглашение на свадьбу — Алексей и Анастасия</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .font-serif {
+            font-family: 'Cormorant+Garamond', serif;
+        }
+        .grayscale-filter {
+            filter: grayscale(100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+        
+        /* Контейнер для слайд-шоу с общим эффектом */
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            filter: grayscale(100%);
+            transition: filter 0.7s ease-in-out;
+        }
+        
+        /* При наведении на контейнер — всё становится цветным */
+        .slideshow-container:hover {
+            filter: grayscale(0%);
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+         .contact-frame {
+        /* Добавлен чуть более светлый градиент, чтобы черный текст внутри не "проваливался" */
+        background: linear-gradient(145deg, #1e1e1e, #0f0f0f);
+        }
+        .contact-btn i {
+            transition: transform 0.3s ease;
+        }
+        .contact-btn:hover i {
+            transform: scale(1.1);
+        }
+        #concierge-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Дополнительный акцент на имени, если шрифт все равно кажется тонким */
+        h3.font-serif {
+            text-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        /* --- СТИЛИ ПАЛИТРЫ (ДРЕСС-КОД) --- */
+        .palette-container {
+            display: flex;
+            height: 380px;
+            gap: 12px;
+            width: 100%;
+        }
+        .palette-item {
+            position: relative;
+            flex: 1;
+            transition: flex 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .palette-item:hover {
+            flex: 3;
+        }
+        .palette-text {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-90deg);
+            white-space: nowrap;
+            font-size: 9px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            opacity: 0.6;
+            transition: all 0.6s ease;
+            pointer-events: none;
+        }
+        .palette-item:hover .palette-text {
+            transform: translateX(-50%) rotate(0deg);
+            bottom: 40px;
+            opacity: 1;
+            font-size: 11px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF9F6] text-stone-800 overflow-x-hidden">
+
+    <!-- --- HERO: THE COVER --- -->
+    <section class="relative h-screen flex flex-col items-center justify-center text-center p-6 bg-black overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="w-full h-full bg-cover bg-center opacity-60 grayscale-filter scale-105" 
+                 style="background-image: url('photo.jpg');"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70"></div>
+        </div>
+        
+        <div class="z-10 animate-fade-in px-4" style="animation-delay: 0.5s;">
+            <div class="w-px h-24 bg-white/30 mx-auto mb-12"></div>
+            <p class="text-[11px] uppercase tracking-[0.6em] text-white/70 mb-8">Союз двух сердец</p>
+            <h1 class="text-6xl md:text-[9rem] font-serif font-light leading-none mb-4 tracking-tighter text-white">
+                A<span class="italic text-white/40">&</span>A
+            </h1>
+            <p class="text-2xl md:text-4xl font-serif italic text-white/80 mb-12">Алексей и Анастасия</p>
+            
+            <div class="h-px w-48 bg-white/20 mx-auto mb-12"></div>
+            
+            <div class="text-white/60 font-light tracking-[0.2em] uppercase text-xs">
+                26 Сентября 2026
+            </div>
+
+            <!-- Countdown Timer -->
+            <div id="countdown" class="flex gap-8 md:gap-12 justify-center mt-16">
+                <div class="text-center">
+                    <span id="days" class="text-4xl md:text-6xl font-serif text-white block font-light leading-none">00</span>
+                    <span class="text-[9px] uppercase tracking-[0.3em] text-white/40 mt-4 block">дней</span>
+                </div>
+                <div class="text-center">
+                    <span id="hours" class="text-4xl md:text-6xl font-serif text-white block font-light leading-none">00</span>
+                    <span class="text-[9px] uppercase tracking-[0.3em] text-white/40 mt-4 block">часов</span>
+                </div>
+                <div class="text-center">
+                    <span id="minutes" class="text-4xl md:text-6xl font-serif text-white block font-light leading-none">00</span>
+                    <span class="text-[9px] uppercase tracking-[0.3em] text-white/40 mt-4 block">минут</span>
+                </div>
+                <div class="text-center">
+                    <span id="seconds" class="text-4xl md:text-6xl font-serif text-white block font-light leading-none">00</span>
+                    <span class="text-[9px] uppercase tracking-[0.3em] text-white/40 mt-4 block">секунд</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-12 text-white/50 animate-bounce cursor-pointer" onclick="scrollToId('story')">
+            <i data-lucide="chevron-down" size="32"></i>
+        </div>
+    </section>
+
+    <!-- --- STORY --- -->
+    <section id="story" class="py-40 px-6 max-w-7xl mx-auto">
+        <div class="grid lg:grid-cols-12 gap-16 items-center">
+            <div class="lg:col-span-5 order-2 lg:order-1">
+                <div class="text-center lg:text-left mb-12">
+                    <span class="text-[10px] uppercase font-medium mb-4 block text-stone-400 tracking-[0.5em]">01. Наша глава</span>
+                    <h2 class="text-4xl md:text-6xl font-serif font-light tracking-tight text-stone-800">Тихая гавань</h2>
+                </div>
+                <div class="space-y-8 text-lg font-light leading-relaxed text-stone-500 italic">
+                    <p>Мы познакомились однажды вечером в ирландском баре. Разговор начался случайно, но закончился тем, что мы гуляли по ночной Москве до самого утра.</p>
+                    <p>Очень быстро мы поняли — это не просто встреча. Уже на первом свидании был запланирован концерт "Зверей", который стал одним из наших первых ярких воспоминаний.</p>
+                    <p>Спустя несколько месяцев наша жизнь изменилась ещё сильнее — у нас появился самый главный человек в нашей жизни.</p>
+                    <p>И теперь, когда нашему малышу уже почти год, мы хотим разделить этот важный день с вами.</p>
+                </div>
+            </div>
+            <div class="lg:col-span-7 order-1 lg:order-2 relative">
+                <!-- Слайд-шоу из 6 изображений -->
+                <div class="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl h-[400px] md:h-[600px] bg-stone-100">
+                    <div class="slideshow-container">
+                        <img src="photo2.jpg" class="slide active" alt="Фото 2">
+                        <img src="photo3.jpg" class="slide" alt="Фото 3">
+                        <img src="photo4.jpg" class="slide" alt="Фото 4">
+                        <img src="photo5.jpg" class="slide" alt="Фото 5">
+                        <img src="photo6.jpg" class="slide" alt="Фото 6">
+                        <img src="photo7.jpg" class="slide" alt="Фото 7">
+                    </div>
+                </div>
+                <div class="absolute top-1/2 -right-8 w-64 h-64 bg-stone-100 -z-10 rounded-full blur-3xl opacity-60"></div>
+            </div>
+        </div>
+    </section>
+    <!-- --- DRESS CODE PALETTE --- -->
+    <section class="py-40 px-6 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-[10px] uppercase font-medium mb-4 block text-stone-400 tracking-[0.5em]">02. Дресс-код</span>
+                <h2 class="text-4xl md:text-6xl font-serif font-light mb-8 italic">Цвета настроения</h2>
+                <p class="text-stone-500 font-light text-base max-w-xl mx-auto leading-relaxed">
+                    Мы хотим создать особенную атмосферу, поэтому будем благодарны, если вы поддержите нашу цветовую гамму.
+                </p>
+                <p class="text-stone-500 font-light text-base max-w-xl mx-auto leading-relaxed">
+                    Главное, избегать ярких, кричащих цветов и для дам - белого.
+                </p>
+            </div>
+            
+            <div class="palette-container" id="dress-code-palette">
+                <!-- Генерируется скриптом -->
+            </div>
+        </div>
+    </section>
+
+    <!-- UNIFIED WISHES SECTION -->
+    <section class="py-32 px-6 md:px-20 border-b border-stone-200 bg-stone-50">
+        <div class="max-w-4xl mx-auto text-center fade-in">
+            <span class="text-[10px] tracking-[0.5em] text-accent uppercase mb-8 block">Wishes</span>
+            <h2 class="font-serif text-5xl md:text-7xl mb-12 italic">Пожелания</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left border-t border-stone-200 pt-16">
+                <div>
+                    <h3 class="text-xs uppercase tracking-[0.2em] font-bold mb-4 flex items-center gap-2">
+                        <i data-lucide="wine" size="14"></i> Вместо цветов
+                    </h3>
+                    <p class="text-stone-500 font-light leading-relaxed">
+                        Мы очень ценим ваше желание подарить нам цветы, но в этот раз будем рады, если вместо букета вы выберете бутылку вашего любимого напитка. Оно согреет наши вечера воспоминаниями о празднике.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase tracking-[0.2em] font-bold mb-4 flex items-center gap-2">
+                        <i data-lucide="gift" size="14"></i> О подарках
+                    </h3>
+                    <p class="text-stone-500 font-light leading-relaxed">
+                        Ваше присутствие — наш главный подарок. Но если вы захотите сделать нам ценный и нужный подарок, мы будем признательны за вклад в бюджет нашей семьи.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- PROGRAM --- -->
+    <section id="program" class="bg-[#121212] py-40 px-6 rounded-t-[4rem] relative overflow-hidden text-white">
+        <div class="absolute -top-1/4 -left-1/4 w-[100%] h-[100%] bg-stone-500/10 blur-[150px] rounded-full opacity-30"></div>
+        <div class="absolute -bottom-1/4 -right-1/4 w-[80%] h-[80%] bg-stone-800/20 blur-[150px] rounded-full opacity-30"></div>
+
+        <div class="max-w-4xl mx-auto relative z-10">
+            <div class="text-center mb-24">
+                <span class="text-[10px] uppercase font-medium mb-4 block text-stone-500 tracking-[0.5em]">02. Тайминг</span>
+                <h2 class="text-4xl md:text-6xl font-serif font-light tracking-tight">Программа мероприятия</h2>
+            </div>
+            
+            <div class="relative space-y-12">
+                <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[1px] bg-white/10"></div>
+                
+                <div class="relative flex items-center justify-between">
+                    <div class="w-[42%] text-right">
+                        <div class="glass-card p-6 rounded-[2rem] hover:bg-white/[0.05] transition-all duration-500">
+                            <span class="text-stone-300 text-lg font-medium uppercase tracking-widest block mb-2">17:00</span>
+                            <h3 class="text-xl font-serif mb-2 text-white">Welcome</h3>
+                            <p class="text-stone-400 text-xs font-light">Сбор гостей и фуршет.</p>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-stone-900 border border-white/20 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                        <i data-lucide="wine" class="text-white/40" size="16"></i>
+                    </div>
+                    <div class="w-[42%]"></div>
+                </div>
+
+                <div class="relative flex items-center justify-between flex-row-reverse">
+                    <div class="w-[42%] text-left">
+                        <div class="glass-card p-6 rounded-[2rem] hover:bg-white/[0.05] transition-all duration-500">
+                            <span class="text-stone-300 text-lg font-medium uppercase tracking-widest block mb-2">17:30</span>
+                            <h3 class="text-xl font-serif mb-2 text-white">Ceremony</h3>
+                            <p class="text-stone-400 text-xs font-light">Самый важный момент — наши клятвы друг другу.</p>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-stone-900 border border-white/20 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                        <i data-lucide="heart" class="text-white/40" size="16"></i>
+                    </div>
+                    <div class="w-[42%]"></div>
+                </div>
+
+                <div class="relative flex items-center justify-between">
+                    <div class="w-[42%] text-right">
+                        <div class="glass-card p-6 rounded-[2rem] hover:bg-white/[0.05] transition-all duration-500">
+                            <span class="text-stone-300 text-lg font-medium uppercase tracking-widest block mb-2">18:30</span>
+                            <h3 class="text-xl font-serif mb-2 text-white">Dinner</h3>
+                            <p class="text-stone-400 text-xs font-light">Банкет и  развлечения.</p>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-stone-900 border border-white/20 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                        <i data-lucide="sparkles" class="text-white/40" size="16"></i>
+                    </div>
+                    <div class="w-[42%]"></div>
+                </div>
+
+                <div class="relative flex items-center justify-between flex-row-reverse">
+                    <div class="w-[42%] text-left">
+                        <div class="glass-card p-6 rounded-[2rem] hover:bg-white/[0.05] transition-all duration-500">
+                            <span class="text-stone-300 text-lg font-medium uppercase tracking-widest block mb-2">23:00</span>
+                            <h3 class="text-xl font-serif mb-2 text-white">Afterparty.</h3>
+                            <p class="text-stone-400 text-xs font-light">DJ, танцы, клубный зал.</p>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-stone-900 border border-white/20 flex items-center justify-center z-20 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                        <i data-lucide="wand-sparkles" class="text-white/40" size="16"></i>
+                    </div>
+                    <div class="w-[42%]"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <!-- --- LOCATION --- -->
+    <section id="location" class="relative py-40 px-6 bg-[#121212] text-white overflow-hidden">
+        <!-- Обновленное фото лофта по вашей ссылке -->
+        <div class="absolute inset-0 z-0">
+            <div class="w-full h-full bg-cover bg-center grayscale opacity-40 contrast-125" 
+                 style="background-image: url('https://avatars.mds.yandex.net/get-altay/16500335/2a0000019ac0b3b6090dbb65d33cc9c61925/XXXL');"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-[#121212]"></div>
+            <div class="absolute inset-0 bg-black/30"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <span class="text-[10px] uppercase font-medium mb-4 block text-stone-500 tracking-[0.5em]">03. Место встречи</span>
+            <h2 class="text-4xl md:text-6xl font-serif font-light mb-16">Лофт Манхэттен</h2>
+            <p class="text-stone-500 mb-16 tracking-widest text-sm uppercase">Деревня Пучково, Новая улица, 4</p>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="h-[400px] rounded-[2rem] overflow-hidden border border-white/10 glass-card">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2263.667876778465!2d37.2847!3d55.4851!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTXCsDI5JzA2LjQiTiAzN8KwMTcnMDQuOSJF!5e0!3m2!1sru!2sru!4v1620000000000!5m2!1sru!2sru" 
+                        class="w-full h-full grayscale invert opacity-70 contrast-125 border-none"
+                        loading="lazy"
+                        title="Карта"></iframe>
+                </div>
+                <div class="text-left space-y-8 glass-card p-8 md:p-12 rounded-[3rem]">
+                    <h4 class="text-2xl font-serif italic text-white/90">Индустриальный шик в объятиях природы</h4>
+                    <p class="text-stone-400 font-light leading-relaxed">
+                        Высокие потолки, кирпичные стены и огромные окна, которые впускают закатное солнце. Это пространство, где наш праздник станет историей.
+                    </p>
+                    <button onclick="window.open('https://yandex.ru/maps/?text=деревня+Пучково+Новая+улица+4')" class="group flex items-center gap-4 text-stone-300 hover:text-white transition-all uppercase tracking-widest text-xs">
+                        Построить маршрут <i data-lucide="arrow-right" class="group-hover:translate-x-1 transition-transform" size="18"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- CHECKLIST: MINIMALIST STYLE --- -->
+    <section id="details" class="py-40 px-6 bg-[#FAF9F6]">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid lg:grid-cols-12 gap-16 items-start">
+                <!-- Title Column -->
+                <div class="lg:col-span-5 sticky top-24">
+                    <span class="text-[10px] uppercase font-medium mb-4 block text-stone-400 tracking-[0.5em]">04. Забота о комфорте</span>
+                    <h2 class="text-4xl md:text-5xl font-serif font-light mb-8 text-stone-800 italic">Взять с собой</h2>
+                    <p class="text-stone-500 font-light text-base md:text-lg leading-relaxed max-w-sm italic">
+                        Для тех, кто решит разделить с нами не только торжественный вечер, но и уютный второй день, мы составили небольшой список необходимых вещей.
+                    </p>
+                </div>
+
+                <!-- Items Column -->
+                <div class="lg:col-span-7 space-y-px">
+                    <div class="group border-b border-stone-200/60 py-10 flex items-center gap-8 hover:px-4 transition-all duration-500">
+                        <span class="text-stone-300 font-serif italic text-2xl group-hover:text-stone-800 transition-colors">01</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm uppercase tracking-[0.2em] font-medium text-stone-800 mb-1">Для сна</h3>
+                            <p class="text-stone-400 text-xs font-light">Удобная одежда для отдыха ночью.</p>
+                        </div>
+                        <i data-lucide="moon" class="text-stone-200 group-hover:text-stone-400 transition-colors" size="20"></i>
+                    </div>
+
+                    <div class="group border-b border-stone-200/60 py-10 flex items-center gap-8 hover:px-4 transition-all duration-500">
+                        <span class="text-stone-300 font-serif italic text-2xl group-hover:text-stone-800 transition-colors">02</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm uppercase tracking-[0.2em] font-medium text-stone-800 mb-1">Банные принадлежности</h3>
+                            <p class="text-stone-400 text-xs font-light">Ваше любимое полотенце и шлепки.</p>
+                        </div>
+                        <i data-lucide="bath" class="text-stone-200 group-hover:text-stone-400 transition-colors" size="20"></i>
+                    </div>
+
+                    <div class="group border-b border-stone-200/60 py-10 flex items-center gap-8 hover:px-4 transition-all duration-500">
+                        <span class="text-stone-300 font-serif italic text-2xl group-hover:text-stone-800 transition-colors">03</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm uppercase tracking-[0.2em] font-medium text-stone-800 mb-1">Второй день</h3>
+                            <p class="text-stone-400 text-xs font-light">Свободная и максимально комфортная одежда.</p>
+                        </div>
+                        <i data-lucide="coffee" class="text-stone-200 group-hover:text-stone-400 transition-colors" size="20"></i>
+                    </div>
+
+                    <div class="group border-b border-stone-200/60 py-10 flex items-center gap-8 hover:px-4 transition-all duration-500">
+                        <span class="text-stone-300 font-serif italic text-2xl group-hover:text-stone-800 transition-colors">04</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm uppercase tracking-[0.2em] font-medium text-stone-800 mb-1">Водные процедуры</h3>
+                            <p class="text-stone-400 text-xs font-light">Купальник или плавки для полного релакса.</p>
+                        </div>
+                        <i data-lucide="waves" class="text-stone-200 group-hover:text-stone-400 transition-colors" size="20"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <section id="concierge" class="py-32 px-6 bg-[#FAF9F6]">
+    <div class="max-w-4xl mx-auto opacity-0 translate-y-10 transition-all duration-1000" id="concierge-section">
+        <!-- Заголовок -->
+        <div class="text-center mb-16">
+            <h2 class="font-serif text-5xl uppercase tracking-tighter italic text-stone-800">CONTACTS</h2>
+            <p class="text-[10px] uppercase tracking-[0.4em] text-stone-500 mt-4">По всем вопросам</p>
+        </div>
+
+        <!-- Карточка контактов -->
+        <div class="contact-frame bg-[#121212] rounded-[2.5rem] p-1 overflow-hidden shadow-2xl">
+            <div class="border border-white/10 p-8 md:p-16 relative rounded-[2.4rem]">
+                <!-- Декоративная линия (сканер) -->
+                <div class="absolute left-1/2 top-0 bottom-0 w-px bg-white/5 hidden md:block"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start relative z-10">
+                    <!-- Информация -->
+                    <div class="text-center md:text-left">
+                        <span class="text-[10px] text-stone-500 uppercase font-bold tracking-[0.3em] block mb-4">Организатор</span>
+                        
+                        <!-- ИМЯ: Увеличен размер и добавлена жирность для читаемости -->
+                        <h3 class="font-serif text-6xl md:text-7xl mb-6 uppercase text-white font-medium tracking-tight">
+                            Мариса
+                        </h3>
+                        
+                        <div class="space-y-6">
+                            <p class="text-sm font-light text-stone-300 leading-relaxed italic border-l-2 border-white/20 pl-4">
+                                «Каждая деталь имеет значение. Мы здесь, чтобы сделать этот день безупречным».
+                            </p>
+                            <p class="text-[11px] text-stone-500 leading-relaxed uppercase tracking-wider font-light">
+                                Если вы готовите сюрприз или у вас возникли вопросы по логистике — свяжитесь со мной.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Кнопки связи -->
+                    <div class="flex flex-col gap-4 self-center">
+                        <a href="tel:89250104267" class="contact-btn border border-white/20 text-white py-4 px-8 text-center text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-500 flex items-center justify-center gap-3 rounded-xl">
+                            <i data-lucide="phone" size="16"></i> Позвонить
+                        </a>
+                        <a href="https://t.me/marisa_wedding" target="_blank" class="contact-btn border border-white/20 text-white py-4 px-8 text-center text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-500 flex items-center justify-center gap-3 rounded-xl">
+                            <i data-lucide="send" size="16"></i> Telegram
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- --- RSVP --- -->
+  <section class="custom-quiz-container">
+    <div class="quiz-form-wrapper">
+        <form id="main-logic-form">
+            <div class="quiz-field">
+                <label class="quiz-label">Ваше имя</label>
+                <input type="text" name="name" class="quiz-input" required placeholder="Иван Иванов">
+            </div>
+
+            <div class="quiz-field">
+                <label class="quiz-label">Ваш запрос</label>
+                <input type="text" name="request" class="quiz-input" required placeholder="Разработка дизайна">
+            </div>
+
+            <div class="quiz-field">
+                <label class="quiz-label">Контакт (TG/Email)</label>
+                <input type="text" name="contact" class="quiz-input" required placeholder="@username">
+            </div>
+
+            <button type="submit" id="form-submit-btn" class="quiz-submit-btn">
+                Отправить данные
+            </button>
+            
+            <div id="quiz-status"></div>
+        </form>
+    </div>
+</section>
+
+    <!-- --- FOOTER --- -->
+    <footer class="py-24 text-center border-t border-stone-100 bg-white">
+        <p class="text-4xl font-serif italic text-stone-800 mb-8">Анастасия & Алексей</p>
+        <div class="flex justify-center gap-8 mb-12 text-stone-300">
+            <i data-lucide="heart" size="20"></i>
+            <i data-lucide="sparkles" size="20"></i>
+            <i data-lucide="camera" size="20"></i>
+        </div>
+        <div class="text-[9px] uppercase tracking-[0.5em] text-stone-400">2026 Свадебное торжество</div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Данные вашей палитры
+        const colors = [
+            { name: "Угольный", hex: "#121212", text: "text-white" },
+            { name: "Шоколад", hex: "#5D4A3E", text: "text-white" },
+            { name: "Глина", hex: "#967E6F", text: "text-white" },
+            { name: "Песок", hex: "#E0D5C3", text: "text-stone-800" },
+            { name: "Шалфей", hex: "#B2BEA9", text: "text-stone-800" },
+            { name: "Олива", hex: "#6B704C", text: "text-white" },
+        ];
+
+         // Инициализация иконок (если еще не сделано в файле)
+        if (window.lucide) {
+        lucide.createIcons();
+        }
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        
+            const observerOptions = {
+                threshold: 0.1
+            };
+        
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+        
+            const target = document.getElementById('concierge-section');
+            if (target) {
+                observer.observe(target);
+            }
+         
+
+        // Рендер палитры
+        const paletteContainer = document.getElementById('dress-code-palette');
+        colors.forEach(color => {
+            const item = document.createElement('div');
+            item.className = 'palette-item';
+            item.style.backgroundColor = color.hex;
+            item.innerHTML = `<span class="palette-text ${color.text}">${color.name}</span>`;
+            paletteContainer.appendChild(item);
+        });
+
+        // Smooth Scroll Function
+        function scrollToId(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Slideshow Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        
+        setInterval(nextSlide, 3000); // Change image every 3 seconds
+
+        // Countdown Timer Logic
+        const weddingTime = new Date("2026-09-26T15:00:00").getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const diff = weddingTime - now;
+
+            if (diff > 0) {
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('days').innerText = d.toString().padStart(2, '0');
+                document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+            }
+        }
+       
+        
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // Form Submission Logic
+        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            this.classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
