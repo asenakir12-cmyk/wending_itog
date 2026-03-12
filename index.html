@@ -743,26 +743,24 @@
         document.getElementById('rsvpForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Чтобы страница не перезагружалась
 
-// 4. Отправка формы в Google Таблицу
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzYGoE9t7KPzED-urvxqaKggtOR2KOPqxY7aviE_dxpOBKwZ6DlSYSOdpTQ664Lc8Uz/exec';
+ // ОТПРАВКА В ТАБЛИЦУ
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxsCFxrc4I3gGv0IJ0Drr_kpoKpJ4pAZzHRwbpVwtAjJjJYD8UTRT2w3JfwSEgqo5BZ/exec';
         const form = document.getElementById('rsvpForm');
         const submitBtn = document.getElementById('submitBtn');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
             submitBtn.disabled = true;
-            submitBtn.innerText = 'Отправка...';
+            submitBtn.innerText = 'СЕКУНДУ...';
 
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => {
+                .then(res => {
                     form.classList.add('hidden');
                     document.getElementById('successMsg').classList.remove('hidden');
-                    document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 })
-                .catch(error => {
+                .catch(err => {
                     submitBtn.disabled = false;
-                    submitBtn.innerText = 'Отправить снова';
-                    console.error('Ошибка!', error.message);
+                    submitBtn.innerText = 'ОШИБКА. ПОВТОРИТЬ?';
                 });
         });
             
@@ -788,6 +786,7 @@
     </script>
 </body>
 </html>
+
 
 
 
