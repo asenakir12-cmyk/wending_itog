@@ -744,9 +744,9 @@
         
         setInterval(updateTimer, 1000);
         updateTimer();
- // ОТПРАВКА В ТАБЛИЦУ
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw4eTAfRFvXYUfg4R7mP3t-5VzcggilQfFKscLwqyfahXumY4V1wYTtQAyQLj49jXEu/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbw4eTAfRFvXYUfg4R7mP3t-5VzcggilQfFKscLwqyfahXumY4V1wYTtQAyQLj49jXEu/exec';
+
 const form = document.getElementById('rsvpForm');
 const submitBtn = document.getElementById('submitBtn');
 
@@ -767,25 +767,15 @@ form.addEventListener('submit', function(e) {
     .catch(error => {
         console.error(error);
         submitBtn.disabled = false;
-        submitBtn.innerText = 'ОШИБКА. ПОВТОРИТЬ?';
+        submitBtn.innerText = 'ОШИБКА. ПОПРОБУЙТЕ СНОВА';
     });
 });
-            
-  
-       
-        
-        setInterval(updateTimer, 1000);
-        updateTimer();
 
-        // Form Submission Logic
-        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            this.classList.add('hidden');
-            document.getElementById('successMessage').classList.remove('hidden');
-        });
+       
     </script>
 </body>
 </html>
+
 
 
 
