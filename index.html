@@ -744,25 +744,28 @@
     e.preventDefault(); // Чтобы страница не перезагружалась
 
  // ОТПРАВКА В ТАБЛИЦУ
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxsCFxrc4I3gGv0IJ0Drr_kpoKpJ4pAZzHRwbpVwtAjJjJYD8UTRT2w3JfwSEgqo5BZ/exec';
-        const form = document.getElementById('rsvpForm');
-        const submitBtn = document.getElementById('submitBtn');
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'СЕКУНДУ...';
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxsCFxrc4I3gGv0IJ0Drr_kpoKpJ4pAZzHRwbpVwtAjJjJYD8UTRT2w3JfwSEgqo5BZ/exec'; // Вставь сюда ссылку /exec
+const form = document.getElementById('rsvpForm');
+const submitBtn = document.getElementById('submitBtn');
 
-            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(res => {
-                    form.classList.add('hidden');
-                    document.getElementById('successMsg').classList.remove('hidden');
-                })
-                .catch(err => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'ОШИБКА. ПОВТОРИТЬ?';
-                });
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'ОТПРАВЛЯЕМ...';
+
+    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(response => {
+            console.log('Success!', response);
+            form.classList.add('hidden'); // Прячем форму
+            document.getElementById('successMsg').classList.remove('hidden'); // Показываем спасибо
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'ОШИБКА. ПОВТОРИТЬ?';
         });
+});
             
     // Скрываем форму
     this.classList.add('hidden');
@@ -786,6 +789,7 @@
     </script>
 </body>
 </html>
+
 
 
 
