@@ -742,7 +742,30 @@
         }
         document.getElementById('rsvpForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Чтобы страница не перезагружалась
-    
+
+// 4. Отправка формы в Google Таблицу
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz157blNtCO0tLgN5vJDPJ8WZeCzWH3kOlSQ9pDkmgsnNwq-E7mAssJdyf800R-XOh6/exec';
+        const form = document.getElementById('rsvpForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Отправка...';
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    form.classList.add('hidden');
+                    document.getElementById('successMsg').classList.remove('hidden');
+                    document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                })
+                .catch(error => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Отправить снова';
+                    console.error('Ошибка!', error.message);
+                });
+        });
+            
     // Скрываем форму
     this.classList.add('hidden');
     // Показываем сообщение об успехе
@@ -765,6 +788,7 @@
     </script>
 </body>
 </html>
+
 
 
 
