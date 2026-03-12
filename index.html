@@ -721,7 +721,7 @@
         
         setInterval(nextSlide, 3000); // Change image every 3 seconds
 
-        // Countdown Timer Logic
+         // Countdown Timer Logic
         const weddingTime = new Date("2026-09-26T15:00:00").getTime();
 
         function updateTimer() {
@@ -740,9 +740,10 @@
                 document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
             }
         }
-        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Чтобы страница не перезагружалась
-
+       
+        
+        setInterval(updateTimer, 1000);
+        updateTimer();
  // ОТПРАВКА В ТАБЛИЦУ
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbw4eTAfRFvXYUfg4R7mP3t-5VzcggilQfFKscLwqyfahXumY4V1wYTtQAyQLj49jXEu/exec';
@@ -785,6 +786,7 @@ form.addEventListener('submit', function(e) {
     </script>
 </body>
 </html>
+
 
 
 
