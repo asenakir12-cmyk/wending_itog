@@ -121,31 +121,77 @@
             font-weight: 400;
         }
         /* Элементы анкеты */
-.input-glass {
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
-}
-.input-glass:focus {
-    background: rgba(255, 255, 255, 0.7);
-    border-color: rgba(0,0,0,0.1);
-}
+/* --- GLASSMORPHISM & VISUALS --- */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            border-radius: 30px;
+        }
 
-.choice-pill {
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    display: block;
-    text-align: center;
-}
-.radio-hidden:checked + .choice-pill {
-    background: #121212;
-    color: white;
-    border-color: #121212;
-    transform: translateY(-2px);
-}
+        .glass-card-dark {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        .glass-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: #f4f4f2;
+        }
+
+        .sphere {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.3); }
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .input-glass {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .input-glass:focus {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .choice-pill {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: block;
+            text-align: center;
+        }
+        
+        /* Стили для выбранного радио-баттона */
+        .radio-hidden:checked + .choice-pill {
+            background: #121212 !important;
+            color: white !important;
+            border-color: #121212 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
     </style>
 </head>
 <body class="bg-[#FAF9F6] text-stone-800 overflow-x-hidden">
@@ -719,6 +765,7 @@
     </script>
 </body>
 </html>
+
 
 
 
